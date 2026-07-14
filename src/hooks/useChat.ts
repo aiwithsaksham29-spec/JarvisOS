@@ -2,18 +2,13 @@ import { useState } from "react";
 import { ChatMessage } from "../types/chat";
 
 export function useChat() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: crypto.randomUUID(),
-      role: "assistant",
-      content: "Hello Saksham! 👋 I'm Jarvis. How can I help you today?",
-      createdAt: new Date(),
-    },
-  ]);
-
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
 
-  async function sendMessage(text: string) {
+  async function sendMessage(
+    text: string,
+    askAI: (text: string) => Promise<string>
+  ) {
     if (!text.trim()) return;
 
     const userMessage: ChatMessage = {
@@ -28,29 +23,19 @@ export function useChat() {
     setLoading(true);
 
     try {
-      const result = await window.jarvis.chat(text);
+      const reply = await askAI(text);
 
-      const assistantMessage: ChatMessage = {
+      const aiMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: result.message,
+        content: reply,
         createdAt: new Date(),
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content: "❌ Failed to contact Ollama.",
-          createdAt: new Date(),
-        },
-      ]);
+      setMessages((prev) => [...prev, aiMessage]);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   return {

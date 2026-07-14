@@ -1,6 +1,4 @@
 import { ChatMessage } from "../../types/chat";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 interface Props {
   message: ChatMessage;
@@ -14,23 +12,20 @@ export default function Message({ message }: Props) {
       style={{
         display: "flex",
         justifyContent: isUser ? "flex-end" : "flex-start",
-        marginBottom: "20px",
+        marginBottom: "16px",
       }}
     >
       <div
         style={{
-          maxWidth: "75%",
-          padding: "16px",
-          borderRadius: "16px",
-          background: isUser ? "#2563eb" : "#1f2937",
+          background: isUser ? "#2563eb" : "#27272a",
+          padding: "14px",
+          borderRadius: "14px",
           color: "white",
-          lineHeight: 1.7,
+          maxWidth: "75%",
           whiteSpace: "pre-wrap",
         }}
       >
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {message.content}
-        </ReactMarkdown>
+        {message.content}
       </div>
     </div>
   );
