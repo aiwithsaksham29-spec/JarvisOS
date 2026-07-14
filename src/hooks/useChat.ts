@@ -1,10 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChatMessage } from "../types/chat";
 import { jarvis } from "../core/Jarvis";
 
 export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function init() {
+      const history = await window.jarvis.loadChat();
+
+      if (history && history.length > 0) {
+        history.forEach((message: ChatMessage) => {
+          jarvis.addMessage(message);
+        });
+
+        setMessages([...jarvis.getConversation()]);
+      }
+    }
+
+    init();
+  }, []);
 
   async function sendMessage(
     text: string,
@@ -21,7 +37,11 @@ export function useChat() {
 
     jarvis.addMessage(userMessage);
 
-    setMessages([...jarvis.getConversation()]);
+    let updatedMessages = [...jarvis.getConversation()];
+
+    setMessages(updatedMessages);
+
+    await window.jarvis.saveChat(updatedMessages);
 
     setLoading(true);
 
@@ -37,7 +57,11 @@ export function useChat() {
 
       jarvis.addMessage(aiMessage);
 
-      setMessages([...jarvis.getConversation()]);
+      updatedMessages = [...jarvis.getConversation()];
+
+      setMessages(updatedMessages);
+
+      await window.jarvis.saveChat(updatedMessages);
     } finally {
       setLoading(false);
     }
