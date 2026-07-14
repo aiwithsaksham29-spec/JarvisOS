@@ -1,12 +1,25 @@
 import { Conversation } from "./Conversation";
 import { Memory } from "./Memory";
+import { ChatMessage } from "../types/chat";
 
 export class Jarvis {
-  conversation = new Conversation();
-  memory = new Memory();
+  private conversation = new Conversation();
+  private memory = new Memory();
 
-  async ask(message: string) {
-    return message;
+  addMessage(message: ChatMessage) {
+    this.conversation.add(message);
+  }
+
+  getConversation() {
+    return this.conversation.getAll();
+  }
+
+  clearConversation() {
+    this.conversation.clear();
+  }
+
+  getMemory() {
+    return this.memory;
   }
 }
 

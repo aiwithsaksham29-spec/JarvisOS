@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChatMessage } from "../types/chat";
+import { jarvis } from "../core/Jarvis";
 
 export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -18,7 +19,9 @@ export function useChat() {
       createdAt: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    jarvis.addMessage(userMessage);
+
+    setMessages([...jarvis.getConversation()]);
 
     setLoading(true);
 
@@ -32,7 +35,9 @@ export function useChat() {
         createdAt: new Date(),
       };
 
-      setMessages((prev) => [...prev, aiMessage]);
+      jarvis.addMessage(aiMessage);
+
+      setMessages([...jarvis.getConversation()]);
     } finally {
       setLoading(false);
     }
