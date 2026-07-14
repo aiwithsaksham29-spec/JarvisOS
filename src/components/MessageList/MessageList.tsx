@@ -21,7 +21,13 @@ export default function MessageList({
   }, [messages, loading]);
 
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "4px",
+      }}
+    >
       {messages.map((message) => (
         <Message
           key={message.id}
@@ -32,6 +38,6 @@ export default function MessageList({
       {loading && <TypingIndicator />}
 
       <div ref={bottomRef} />
-    </>
+    </div>
   );
 }
