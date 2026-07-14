@@ -1,39 +1,38 @@
-import "./App.css";
+import Chat from "./components/Chat/Chat";
+import Orb from "./components/Orb/Orb";
+import Header from "./components/Header/Header";
+import Sidebar from "./components/Sidebar/Sidebar";
 
-function App() {
+export default function App() {
   return (
-    <div className="app">
-      <aside className="sidebar">
-        <h2>AI-OS</h2>
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: "#09090b",
+        color: "white",
+      }}
+    >
+      <Header />
 
-        <button>💬 Chat</button>
-        <button>🧠 Memory</button>
-        <button>🤖 Agents</button>
-        <button>⚙ Settings</button>
-      </aside>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+        }}
+      >
+        <Sidebar />
 
-      <main className="main">
-        <div className="orb"></div>
-
-        <h1>Welcome</h1>
-
-        <p>Your Personal AI Assistant</p>
-
-        <div className="chat-box">
-          <input
-            type="text"
-            placeholder="Ask me anything..."
-          />
-
-          <button>Send</button>
-        </div>
-
-        <div className="status">
-          ● Ollama : Disconnected
-        </div>
-      </main>
+<main
+  style={{
+    flex: 1,
+    display: "flex",
+  }}
+>
+  <Chat />
+</main>
+      </div>
     </div>
   );
 }
-
-export default App;

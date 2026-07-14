@@ -1,7 +1,52 @@
-import { app, BrowserWindow } from "electron";
+import { ipcMain, app, BrowserWindow } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+const OLLAMA_URL = "http://127.0.0.1:11434/api/chat";
+async function chatWithOllama(message) {
+  const response = await fetch(OLLAMA_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "qwen3:8b",
+      messages: [
+        {
+          role: "user",
+          content: message
+        }
+      ],
+      stream: false,
+      options: {
+        temperature: 0.7,
+        num_ctx: 4096,
+        num_predict: 512
+      }
+    })
+  });
+  if (!response.ok) {
+    throw new Error("Failed to contact Ollama");
+  }
+  const data = await response.json();
+  return data.message.content;
+}
+function registerOllamaIPC() {
+  ipcMain.handle("ollama:chat", async (_, message) => {
+    try {
+      const response = await chatWithOllama(message);
+      return {
+        success: true,
+        message: response
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : "Unknown error"
+      };
+    }
+  });
+}
 createRequire(import.meta.url);
 const __dirname$1 = path.dirname(fileURLToPath(import.meta.url));
 process.env.APP_ROOT = path.join(__dirname$1, "..");
@@ -37,7 +82,10 @@ app.on("activate", () => {
     createWindow();
   }
 });
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  registerOllamaIPC();
+  createWindow();
+});
 export {
   MAIN_DIST,
   RENDERER_DIST,

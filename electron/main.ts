@@ -1,3 +1,4 @@
+import { registerOllamaIPC } from "./ipc/ollama";
 import { app, BrowserWindow } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
@@ -65,4 +66,7 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  registerOllamaIPC();
+  createWindow();
+});
