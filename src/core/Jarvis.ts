@@ -18,8 +18,16 @@ export class Jarvis {
     this.conversation.clear();
   }
 
+  remember(key: string, value: string) {
+    this.memory.remember(key, value);
+  }
+
+  recall(key: string) {
+    return this.memory.recall(key);
+  }
+
   getMemory() {
-    return this.memory;
+    return this.memory.getAll();
   }
 }
 
